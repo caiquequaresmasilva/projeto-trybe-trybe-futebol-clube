@@ -1,29 +1,12 @@
 import { sign } from 'jsonwebtoken';
+import { compare } from 'bcryptjs';
 import { readFileSync } from 'fs';
 import { ILogin } from '../interfaces/User';
 import User from '../database/models/users';
 
 const JWT_SECRET = readFileSync('./jwt.evaluation.key', 'utf-8');
 
-// class UserService {
-//   constructor(
-//     readonly UserModel: typeof User,
-//   ) {}
-
-//   static generateToken(payload: User) : string {
-//     return sign(payload, JWT_SECRET, {
-//       algorithm: 'HS256',
-//       expiresIn: '1d',
-//     });
-//   }
-
-//   public async login(login: ILogin) {
-//     const user = await this.UserModel.findOne({ where: { ...login } });
-//     if (!user) return false;
-//     const token = UserService.generateToken(user);
-//     return { user, token };
-//   }
-// }
+const checkPassword = (password: string, hash: string): Promise<boolean> => compare(password, hash);
 
 const generateToken = (payload:ILogin) : string => sign(payload, JWT_SECRET, {
   algorithm: 'HS256',
@@ -31,10 +14,14 @@ const generateToken = (payload:ILogin) : string => sign(payload, JWT_SECRET, {
 });
 
 const login = async (loginInfo: ILogin) => {
-  const user = await User.findOne({ where: { ...loginInfo } });
-  if (!user) return false;
+  const user = await User.findOne({ where: { email: loginInfo.email } });
+  if (!user) return { errorCode: 401, message: 'Incorrect email or password' };
+  const { password,username,email,id,role } = user;
+  if (!checkPassword(loginInfo.password, password)) {
+    return { errorCode: 401, message: 'Incorrect email or password' };
+  }
   const token = generateToken(loginInfo);
-  return { user, token };
+  return { user:{ id,username,role,email}, token };
 };
 
 export { generateToken, login };

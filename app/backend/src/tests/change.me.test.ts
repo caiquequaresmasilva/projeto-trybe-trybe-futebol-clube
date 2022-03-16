@@ -6,7 +6,7 @@ import User from '../database/models/users';
 import { app } from '../app';
 import { Response } from 'superagent';
 
-import { mockedLogin, validUser } from './mock'
+import { mockedLogin, validUser, invalidUser } from './mock'
 import { doesNotMatch } from 'assert';
 
 chai.use(chaiHttp);
@@ -37,6 +37,25 @@ describe('POST /login', async () => {
 
     it("Deve retornar o token de acesso",() =>{
       expect(chaiHttpResponse.body).to.have.property("token")
+    })
+  })
+
+  describe("Quando o login é feito com dados inválidos",async()=>{
+
+    before(async ()=>{
+      sinon.stub(User,'findOne').resolves(undefined);
+      chaiHttpResponse = await chai.request(app).post(ENDPOINT).send(invalidUser);
+    })
+    after(async ()=>{
+    (User.findOne as sinon.SinonStub).restore();
+    })
+
+    it("Deve retornar status 401",() =>{
+      expect(chaiHttpResponse).to.have.status(401);
+    })
+
+    it("Deve retornar a menssagem de erro",() =>{
+      expect(chaiHttpResponse.body.message).to.be.equal("Incorrect email or password")
     })
   })
   /**
