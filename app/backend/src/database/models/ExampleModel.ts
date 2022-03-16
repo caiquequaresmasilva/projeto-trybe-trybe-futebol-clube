@@ -4,6 +4,9 @@ import db from '.';
 
 class Example extends Model {
   // public <campo>!: <tipo>;
+  public id: number;
+
+  public username: string;
 }
 
 Example.init({
@@ -17,7 +20,7 @@ Example.init({
 });
 
 /**
-  * `Workaround` para aplicar as associations em TS: 
+  * `Workaround` para aplicar as associations em TS:
   * Associations 1:N devem ficar em uma das instâncias de modelo
   * */
 
