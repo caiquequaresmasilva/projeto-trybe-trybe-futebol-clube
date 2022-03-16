@@ -58,6 +58,21 @@ describe('POST /login', async () => {
       expect(chaiHttpResponse.body.message).to.be.equal("Incorrect email or password")
     })
   })
+
+  describe("Quando o login é feito sem os dados necessários",async()=>{
+
+    before(async ()=>{
+      chaiHttpResponse = await chai.request(app).post(ENDPOINT).send({});
+    })
+
+    it("Deve retornar status 401",() =>{
+      expect(chaiHttpResponse).to.have.status(401);
+    })
+
+    it("Deve retornar a menssagem de erro correta",() =>{
+      expect(chaiHttpResponse.body.message).to.be.equal("All fields must be filled")
+    })
+  })
   /**
    * Exemplo do uso de stubs com tipos
    */
