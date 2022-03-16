@@ -20,6 +20,9 @@ class App {
     };
 
     this.app.use(accessControl);
+    this.app.get('/', async (req, res) => {
+      res.status(200).send('ok');
+    });
     // ...
   }
 
