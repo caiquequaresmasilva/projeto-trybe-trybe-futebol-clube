@@ -54,7 +54,7 @@ describe('POST /login', async () => {
       expect(chaiHttpResponse).to.have.status(401);
     })
 
-    it("Deve retornar a menssagem de erro",() =>{
+    it("Deve retornar a mensagem de erro",() =>{
       expect(chaiHttpResponse.body.message).to.be.equal("Incorrect email or password")
     })
   })
@@ -69,7 +69,7 @@ describe('POST /login', async () => {
       expect(chaiHttpResponse).to.have.status(401);
     })
 
-    it("Deve retornar a menssagem de erro correta",() =>{
+    it("Deve retornar a mensagem de erro correta",() =>{
       expect(chaiHttpResponse.body.message).to.be.equal("All fields must be filled")
     })
   })
