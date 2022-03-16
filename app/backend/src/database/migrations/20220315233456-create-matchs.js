@@ -24,6 +24,7 @@ module.exports = {
       },
       away_team: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
             model: 'clubs',
             key: 'id'
