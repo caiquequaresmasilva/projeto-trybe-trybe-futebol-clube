@@ -7,22 +7,23 @@ import { app } from '../app';
 import { Response } from 'superagent';
 
 import { mockedLogin, validUser } from './mock'
+import { doesNotMatch } from 'assert';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('POST /login', () => {
+describe('POST /login', async () => {
   const ENDPOINT = '/login';
   let chaiHttpResponse: Response;
 
-  describe("Quando o login é feito com dados válidos",()=>{
+  describe("Quando o login é feito com dados válidos",async()=>{
 
     before(async ()=>{
       sinon.stub(User,'findOne').resolves(mockedLogin as User);
       chaiHttpResponse = await chai.request(app).post(ENDPOINT).send(validUser);
     })
-    after(()=>{
+    after(async ()=>{
     (User.findOne as sinon.SinonStub).restore();
     })
 

@@ -1,4 +1,6 @@
 import * as express from 'express';
+import * as cors from 'cors';
+import loginRoutes from './routes/loginRoutes';
 
 class App {
   public app: express.Express;
@@ -8,6 +10,7 @@ class App {
     // ...
     this.app = express();
     this.config();
+    this.setRoutes();
     // ...
   }
 
@@ -20,10 +23,14 @@ class App {
     };
 
     this.app.use(accessControl);
-    this.app.get('/', async (req, res) => {
-      res.status(200).send('ok');
-    });
+    this.app.use(cors());
+    this.app.use(express.json());
+
     // ...
+  }
+
+  private setRoutes():void {
+    this.app.use('/login', loginRoutes);
   }
 
   // ...

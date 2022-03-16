@@ -7,10 +7,15 @@ interface IUser {
   password?:string
 }
 
-// interface ILoggedUser extends IUser{
-//   user: IUser
-//   token: string
-// }
+interface ILogin{
+  email: string
+  password: string
+}
+
+interface ILoginResponse{
+  user: IUser
+  token: string
+}
 
 export default IUser;
-// export { ILoggedUser };
+export { ILogin, ILoginResponse };
