@@ -12,10 +12,11 @@ import { doesNotMatch } from 'assert';
 chai.use(chaiHttp);
 
 const { expect } = chai;
+let chaiHttpResponse: Response;
 
 describe('POST /login', async () => {
   const ENDPOINT = '/login';
-  let chaiHttpResponse: Response;
+  
 
   describe("Quando o login é feito com dados válidos",async()=>{
 
@@ -73,6 +74,32 @@ describe('POST /login', async () => {
       expect(chaiHttpResponse.body.message).to.be.equal("All fields must be filled")
     })
   })
+
+});
+
+describe("GET /login/validate ",async()=>{
+  const ENDPOINT = '/login/validate'
+
+  describe("Quando o acesso é feito com o token de autorização", async ()=>{
+    before(async ()=>{
+      chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+      const{ token } = chaiHttpResponse.body
+      chaiHttpResponse = await chai.request(app).get(ENDPOINT).set('authorization',token);
+   })
+
+  it("Deve retornar status 200",() =>{
+    expect(chaiHttpResponse).to.have.status(200);
+  })
+
+  it("Deve retornar a role do usuário",() =>{
+    expect(chaiHttpResponse.body).to.be("admin");
+  })
+
+  })
+
+});
+
+
   /**
    * Exemplo do uso de stubs com tipos
    */
@@ -99,4 +126,3 @@ describe('POST /login', async () => {
   //   expect(...)
   // });
 
-});
