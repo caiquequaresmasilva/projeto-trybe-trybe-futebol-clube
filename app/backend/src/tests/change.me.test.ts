@@ -3,6 +3,7 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import User from '../database/models/users';
 import Club from '../database/models/clubs'
+import Match from '../database/models/matchs'
 
 import { app } from '../app';
 import { Response } from 'superagent';
@@ -12,7 +13,8 @@ import {
     validUser, 
     invalidUser,
     mockedClubs,
-    mockedClubId } from './mock'
+    mockedClubId,
+    mockedMatches } from './mock'
 
 chai.use(chaiHttp);
 
@@ -150,6 +152,73 @@ describe("GET /clubs/:id ",async()=>{
   
     })
   
+});
+
+describe("GET /matchs",async()=>{
+  const ENDPOINT = '/matchs'
+    
+  describe("Quando a requisiçao para a rota é feita", async ()=>{
+    before(async ()=>{
+      sinon.stub(Match,'findAll').resolves(mockedMatches as Match[]);
+      chaiHttpResponse = await chai.request(app).get(ENDPOINT);
+    })
+    after(async ()=>{
+      (Match.findAll as sinon.SinonStub).restore();
+    })
+    
+    it("Deve retornar status 200",() =>{
+      expect(chaiHttpResponse).to.have.status(200);
+    })
+    
+    it("Deve retornar a lista de partidas",() =>{
+      expect(chaiHttpResponse.body).to.be.eql(mockedMatches);
+    })
+    
+  })    
+});
+
+describe("GET /matchs?inProgress=",async()=>{
+  const ENDPOINT = '/matchs?inProgress=true'
+  const inProgressMatches = [mockedMatches[1]]
+  const finishedMatches = [mockedMatches[0]]
+    
+  describe("Quando o parâmetro inProgress=true é passado", async ()=>{
+    before(async ()=>{
+      sinon.stub(Match,'findAll').resolves(inProgressMatches as Match[]);
+      chaiHttpResponse = await chai.request(app).get(ENDPOINT);
+    })
+    after(async ()=>{
+      (Match.findAll as sinon.SinonStub).restore();
+    })
+    
+    it("Deve retornar status 200",() =>{
+      expect(chaiHttpResponse).to.have.status(200);
+    })
+    
+    it("Deve retornar a lista de partidas em progresso",() =>{
+      expect(chaiHttpResponse.body).to.be.eql(inProgressMatches);
+    })
+    
+  })
+  
+  describe("Quando o parâmetro inProgress=false é passado", async ()=>{
+    before(async ()=>{
+      sinon.stub(Match,'findAll').resolves(finishedMatches as Match[]);
+      chaiHttpResponse = await chai.request(app).get(ENDPOINT);
+    })
+    after(async ()=>{
+      (Match.findAll as sinon.SinonStub).restore();
+    })
+    
+    it("Deve retornar status 200",() =>{
+      expect(chaiHttpResponse).to.have.status(200);
+    })
+    
+    it("Deve retornar a lista de partidas em progresso",() =>{
+      expect(chaiHttpResponse.body).to.be.eql(finishedMatches);
+    })
+    
+  })   
 });
 
 
