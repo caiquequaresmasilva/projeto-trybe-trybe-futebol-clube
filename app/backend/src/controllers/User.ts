@@ -15,4 +15,11 @@ const validateLogin = async (req: Request, res: Response, next: NextFunction) =>
   next();
 };
 
-export { login, validateLogin };
+const authValidation = async (req: Request, res: Response) => {
+  const { authorization } = req.headers;
+  const val = UserService.authValidation(authorization);
+  if (val.errorCode) return res.status(val.errorCode).json({ message: val.message });
+  res.status(200).json(val.role);
+};
+
+export { login, validateLogin, authValidation };

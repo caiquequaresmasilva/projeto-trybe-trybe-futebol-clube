@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken';
+import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 import { readFileSync } from 'fs';
 import IUser, { ILogin } from '../interfaces/User';
@@ -13,6 +13,16 @@ const generateToken = (payload:IUser) : string => sign(payload, JWT_SECRET, {
   algorithm: 'HS256',
   expiresIn: '1d',
 });
+
+const authValidation = (token:string | undefined) => {
+  if (!token) return { errorCode: 401, message: 'Token not found' };
+  try {
+    const user = verify(token, JWT_SECRET);
+    return { role: (<JwtPayload>user).role };
+  } catch (_) {
+    return { errorCode: 401, message: 'Invalid Token' };
+  }
+};
 
 const validateLogin = (user: ILogin) => {
   const validation = loginSchema.validate(user);
@@ -34,4 +44,4 @@ const login = async (loginInfo: ILogin) => {
   return { user: { id, username, role, email }, token };
 };
 
-export { generateToken, login, validateLogin };
+export { generateToken, login, validateLogin, authValidation };

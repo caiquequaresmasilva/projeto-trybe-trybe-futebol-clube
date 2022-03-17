@@ -92,7 +92,7 @@ describe("GET /login/validate ",async()=>{
   })
 
   it("Deve retornar a role do usuário",() =>{
-    expect(chaiHttpResponse.body).to.be("admin");
+    expect(chaiHttpResponse.body).to.be.equal("admin");
   })
 
   })
