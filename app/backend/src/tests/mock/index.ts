@@ -119,10 +119,19 @@ const mockedMatches = [
   }
 ];
 
+const matchToSave = {
+    "homeTeam": 16, 
+    "awayTeam": 8, 
+    "homeTeamGoals": 2,
+    "awayTeamGoals": 2,
+    "inProgress": true 
+};
+
 export { 
     mockedLogin, 
     validUser, 
     invalidUser, 
     mockedClubs,
     mockedClubId,
-    mockedMatches };
+    mockedMatches,
+    matchToSave };

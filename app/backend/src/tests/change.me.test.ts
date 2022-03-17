@@ -14,7 +14,8 @@ import {
     invalidUser,
     mockedClubs,
     mockedClubId,
-    mockedMatches } from './mock'
+    mockedMatches,
+    matchToSave } from './mock'
 
 chai.use(chaiHttp);
 
@@ -216,6 +217,47 @@ describe("GET /matchs?inProgress=",async()=>{
     
     it("Deve retornar a lista de partidas em finalizadas",() =>{
       expect(chaiHttpResponse.body).to.be.eql(finishedMatches);
+    })
+    
+  })   
+});
+
+describe("POST /matchs",async()=>{
+  const ENDPOINT = '/matchs';
+  const mockedCreatedMatch = {id:1, ...matchToSave}
+    
+  describe("Quando a requisição possui um token válido", async ()=>{
+    before(async ()=>{
+      sinon.stub(Match,'create').resolves(mockedCreatedMatch as Match);
+      chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+      const{ token } = chaiHttpResponse.body
+      chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization',token).send(matchToSave);
+    })
+    after(async ()=>{
+      (Match.create as sinon.SinonStub).restore();
+    })
+    
+    it("Deve retornar status 201",() =>{
+      expect(chaiHttpResponse).to.have.status(201);
+    })
+    
+    it("Deve retornar a partida criada com seu Id",() =>{
+      expect(chaiHttpResponse.body).to.be.eql(mockedCreatedMatch);
+    })
+    
+  })
+  
+  describe("Quando a requisição não possui um token válido", async ()=>{
+    before(async ()=>{
+      chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization','tokenInvalido').send(matchToSave);
+    })
+    
+    it("Deve retornar status 401",() =>{
+      expect(chaiHttpResponse).to.have.status(200);
+    })
+    
+    it("Deve retornar a mensagem correta",() =>{
+      expect(chaiHttpResponse.body.message).to.be("Invalid Token");
     })
     
   })   
