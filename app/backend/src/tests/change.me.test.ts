@@ -2,12 +2,16 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import User from '../database/models/users';
+import Club from '../database/models/clubs'
 
 import { app } from '../app';
 import { Response } from 'superagent';
 
-import { mockedLogin, validUser, invalidUser } from './mock'
-import { doesNotMatch } from 'assert';
+import { 
+    mockedLogin, 
+    validUser, 
+    invalidUser,
+    mockedClubs } from './mock'
 
 chai.use(chaiHttp);
 
@@ -98,6 +102,30 @@ describe("GET /login/validate ",async()=>{
   })
 
 });
+
+describe("GET /clubs ",async()=>{
+    const ENDPOINT = '/clubs'
+  
+    describe("Quando a requisiçao para a rota é feita", async ()=>{
+      before(async ()=>{
+        sinon.stub(Club,'findAll').resolves(mockedClubs as Club[]);
+        chaiHttpResponse = await chai.request(app).get(ENDPOINT);
+     })
+     after(async ()=>{
+        (Club.findAll as sinon.SinonStub).restore();
+        })
+  
+    it("Deve retornar status 200",() =>{
+      expect(chaiHttpResponse).to.have.status(200);
+    })
+  
+    it("Deve retornar a lista de clubes",() =>{
+      expect(chaiHttpResponse.body).to.be.eql(mockedClubs);
+    })
+  
+    })
+  
+  });
 
 
   /**

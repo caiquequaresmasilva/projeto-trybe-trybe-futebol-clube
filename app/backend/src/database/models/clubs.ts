@@ -2,10 +2,14 @@ import { Model, DataTypes } from 'sequelize';
 import db from '.';
 // import OtherModel from './OtherModel';
 
-class Club extends Model {}
+class Club extends Model {
+  public id: number;
+
+  public clubName: string;
+}
 
 Club.init({
-  club_name: {
+  clubName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
