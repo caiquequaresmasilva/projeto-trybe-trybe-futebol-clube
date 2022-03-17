@@ -1,24 +1,13 @@
-import { sign, verify, JwtPayload } from 'jsonwebtoken';
-import { compare } from 'bcryptjs';
-import { readFileSync } from 'fs';
-import IUser, { ILogin } from '../interfaces/User';
+import { ILogin } from '../interfaces/User';
 import User from '../database/models/users';
 import { loginSchema } from '../schemas/user';
-
-const JWT_SECRET = readFileSync('./jwt.evaluation.key', 'utf-8');
-
-const checkPassword = (password: string, hash: string): Promise<boolean> => compare(password, hash);
-
-const generateToken = (payload:IUser) : string => sign(payload, JWT_SECRET, {
-  algorithm: 'HS256',
-  expiresIn: '1d',
-});
+import { Token, checkPassword } from '../utils';
 
 const authValidation = (token:string | undefined) => {
   if (!token) return { errorCode: 401, message: 'Token not found' };
   try {
-    const user = verify(token, JWT_SECRET);
-    return { role: (<JwtPayload>user).role };
+    const user = Token.verify(token);
+    return user;
   } catch (_) {
     return { errorCode: 401, message: 'Invalid Token' };
   }
@@ -40,8 +29,8 @@ const login = async (loginInfo: ILogin) => {
   if (!passFlag) {
     return { errorCode: 401, message: 'Incorrect email or password' };
   }
-  const token = generateToken({ username, email, id, role });
+  const token = Token.generate({ username, email, id, role });
   return { user: { id, username, role, email }, token };
 };
 
-export { generateToken, login, validateLogin, authValidation };
+export { login, validateLogin, authValidation };
