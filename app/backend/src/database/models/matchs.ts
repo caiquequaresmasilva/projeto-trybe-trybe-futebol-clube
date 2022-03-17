@@ -3,19 +3,31 @@ import db from '.';
 // import OtherModel from './OtherModel';
 import Club from './clubs';
 
-class Match extends Model {}
+class Match extends Model {
+  public id: number;
+
+  public homeTeam: number;
+
+  public homeTeamGoals: number;
+
+  public awayTeam: number;
+
+  public awayTeamGoals: number;
+
+  public inProgress: boolean;
+}
 
 Match.init({
-  home_team_goals: {
+  homeTeamGoals: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  away_team_goals: {
+  awayTeamGoals: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  in_progress: {
-    type: DataTypes.INTEGER,
+  inProgress: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
   },
 
