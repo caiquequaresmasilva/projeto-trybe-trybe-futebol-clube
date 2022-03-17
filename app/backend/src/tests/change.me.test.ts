@@ -214,7 +214,7 @@ describe("GET /matchs?inProgress=",async()=>{
       expect(chaiHttpResponse).to.have.status(200);
     })
     
-    it("Deve retornar a lista de partidas em progresso",() =>{
+    it("Deve retornar a lista de partidas em finalizadas",() =>{
       expect(chaiHttpResponse.body).to.be.eql(finishedMatches);
     })
     
