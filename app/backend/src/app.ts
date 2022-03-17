@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as cors from 'cors';
-import loginRoutes from './routes/loginRoutes';
+import { clubsRouter, loginRouter } from './routes';
 
 class App {
   public app: express.Express;
@@ -30,7 +30,8 @@ class App {
   }
 
   private setRoutes():void {
-    this.app.use('/login', loginRoutes);
+    this.app.use('/login', loginRouter);
+    this.app.use('/clubs', clubsRouter);
   }
 
   // ...
