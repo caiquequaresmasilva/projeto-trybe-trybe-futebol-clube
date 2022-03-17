@@ -73,6 +73,11 @@ const mockedClubs = [
   }
 ]
 
+const mockedClubId = {
+    "id": 5,
+    "clubName": "Cruzeiro"
+}
+
 const validUser = { 
     email: "admin@admin.com", 
     password: "secret_admin"
@@ -83,4 +88,9 @@ const invalidUser = {
     password: 'senhaerrada'
 }
 
-export { mockedLogin, validUser, invalidUser, mockedClubs };
+export { 
+    mockedLogin, 
+    validUser, 
+    invalidUser, 
+    mockedClubs,
+    mockedClubId };

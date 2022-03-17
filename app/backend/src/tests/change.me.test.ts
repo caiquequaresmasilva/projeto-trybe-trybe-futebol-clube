@@ -11,7 +11,8 @@ import {
     mockedLogin, 
     validUser, 
     invalidUser,
-    mockedClubs } from './mock'
+    mockedClubs,
+    mockedClubId } from './mock'
 
 chai.use(chaiHttp);
 
@@ -104,16 +105,16 @@ describe("GET /login/validate ",async()=>{
 });
 
 describe("GET /clubs ",async()=>{
-    const ENDPOINT = '/clubs'
+  const ENDPOINT = '/clubs'
   
-    describe("Quando a requisiçao para a rota é feita", async ()=>{
-      before(async ()=>{
-        sinon.stub(Club,'findAll').resolves(mockedClubs as Club[]);
-        chaiHttpResponse = await chai.request(app).get(ENDPOINT);
-     })
-     after(async ()=>{
-        (Club.findAll as sinon.SinonStub).restore();
-        })
+  describe("Quando a requisiçao para a rota é feita", async ()=>{
+    before(async ()=>{
+      sinon.stub(Club,'findAll').resolves(mockedClubs as Club[]);
+      chaiHttpResponse = await chai.request(app).get(ENDPOINT);
+    })
+    after(async ()=>{
+      (Club.findAll as sinon.SinonStub).restore();
+    })
   
     it("Deve retornar status 200",() =>{
       expect(chaiHttpResponse).to.have.status(200);
@@ -125,7 +126,31 @@ describe("GET /clubs ",async()=>{
   
     })
   
-  });
+});
+
+describe("GET /clubs/:id ",async()=>{
+  const ENDPOINT = '/clubs/5'
+  
+  describe("Quando a requisiçao para a rota é feita com o id correto", async ()=>{
+    before(async ()=>{
+      sinon.stub(Club,'findByPk').resolves(mockedClubId as Club);
+      chaiHttpResponse = await chai.request(app).get(ENDPOINT);
+    })
+    after(async ()=>{
+      (Club.findByPk as sinon.SinonStub).restore();
+    })
+  
+    it("Deve retornar status 200",() =>{
+      expect(chaiHttpResponse).to.have.status(200);
+    })
+  
+    it("Deve retornar a lista de clubes",() =>{
+      expect(chaiHttpResponse.body).to.be.eql(mockedClubId);
+    })
+  
+    })
+  
+});
 
 
   /**
