@@ -6,6 +6,6 @@ const getAll = async (): Promise<IClub[]> => {
   return clubs;
 };
 
-const getById = () => null;
+const getById = async (id: number | string) => Club.findByPk(id);
 
 export { getAll, getById };

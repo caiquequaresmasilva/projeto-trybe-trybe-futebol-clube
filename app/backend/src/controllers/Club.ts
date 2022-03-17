@@ -6,6 +6,11 @@ const getAll = async (req:Request, res:Response) => {
   res.status(200).json(clubs);
 };
 
-const getById = () => null;
+const getById = async (req:Request, res:Response) => {
+  const { id } = req.params;
+  const club = await ClubService.getById(id);
+  if (!club) return res.status(404).json({ message: 'Club not found' });
+  res.status(200).json(club);
+};
 
 export { getAll, getById };
