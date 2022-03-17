@@ -253,7 +253,45 @@ describe("POST /matchs",async()=>{
     })
     
     it("Deve retornar status 401",() =>{
+      expect(chaiHttpResponse).to.have.status(401);
+    })
+    
+    it("Deve retornar a mensagem correta",() =>{
+      expect(chaiHttpResponse.body.message).to.be("Invalid Token");
+    })
+    
+  })   
+});
+
+describe("PATCH /matchs/:id/finish",async()=>{
+  const ENDPOINT = '/matchs/1/finish';
+  const mockedUpdatedMatch = {id:1, inProgress: false, ...matchToSave}
+  const response: [number,Match[]] = [1,[mockedUpdatedMatch as Match]]
+    
+  describe("Quando a requisição possui um token válido", async ()=>{
+    before(async ()=>{
+      sinon.stub(Match,'update').resolves(response);
+      chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+      const{ token } = chaiHttpResponse.body
+      chaiHttpResponse = await chai.request(app).patch(ENDPOINT).set('authorization',token);
+    })
+    after(async ()=>{
+      (Match.update as sinon.SinonStub).restore();
+    })
+    
+    it("Deve retornar status 200",() =>{
       expect(chaiHttpResponse).to.have.status(200);
+    })
+    
+  })
+  
+  describe("Quando a requisição não possui um token válido", async ()=>{
+    before(async ()=>{
+      chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization','tokenInvalido');
+    })
+    
+    it("Deve retornar status 401",() =>{
+      expect(chaiHttpResponse).to.have.status(401);
     })
     
     it("Deve retornar a mensagem correta",() =>{
