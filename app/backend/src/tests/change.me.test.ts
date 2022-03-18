@@ -226,6 +226,7 @@ describe("POST /matchs",async()=>{
   const ENDPOINT = '/matchs';
   const mockedCreatedMatch = {id:1, ...matchToSave}
   const wrongMatch = {...matchToSave,awayTeam: matchToSave.homeTeam}
+  const wrongClubMatch = {...matchToSave, homeTeam:42}
     
   describe("Quando a requisição possui um token válido", async ()=>{
     before(async ()=>{
@@ -263,7 +264,24 @@ describe("POST /matchs",async()=>{
       expect(chaiHttpResponse.body.message).to.be("It is not possible to create a match with two equal teams");
     })
     
-  })   
+  })
+  
+  describe("Quando a requisição possui time que não existe na tabela clubs", async ()=>{
+    before(async ()=>{
+      chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+      const{ token } = chaiHttpResponse.body
+      chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization',token).send(wrongClubMatch);
+    })
+    
+    it("Deve retornar status 404",() =>{
+      expect(chaiHttpResponse).to.have.status(404);
+    })
+    
+    it("Deve retornar a mensagem correta",() =>{
+      expect(chaiHttpResponse.body.message).to.be("Team not found");
+    })
+    
+  })  
   
   describe("Quando a requisição não possui um token válido", async ()=>{
     before(async ()=>{
