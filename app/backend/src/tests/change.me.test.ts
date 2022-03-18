@@ -273,12 +273,12 @@ describe("POST /matchs",async()=>{
       chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization',token).send(wrongClubMatch);
     })
     
-    it("Deve retornar status 404",() =>{
-      expect(chaiHttpResponse).to.have.status(404);
+    it("Deve retornar status 401",() =>{
+      expect(chaiHttpResponse).to.have.status(401);
     })
     
     it("Deve retornar a mensagem correta",() =>{
-      expect(chaiHttpResponse.body.message).to.be.equal("Team not found");
+      expect(chaiHttpResponse.body.message).to.be.equal("There is no team with such id!");
     })
     
   })  
@@ -338,6 +338,96 @@ describe("PATCH /matchs/:id/finish",async()=>{
     
   })   
 });
+
+
+describe("PATCH /matchs/:id",async()=>{
+    const ENDPOINT = '/matchs/1';
+    const mockedInProgressMatch = {...matchToSave, id:1, inProgress: true}
+    const mockedFinishedMatch = {...matchToSave, id:1, inProgress: false }
+    const response: [number,Match[]] = [1,[mockedInProgressMatch as Match]]
+    const updateMatch = {
+        "homeTeamGoals": 3,
+        "awayTeamGoals": 2
+    }
+      
+    describe("Quando a requisição possui um token válido", async ()=>{
+      before(async ()=>{
+        sinon.stub(Match,'update').resolves(response);
+        sinon.stub(Match,'findByPk').resolves(mockedInProgressMatch as Match)
+        chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+        const{ token } = chaiHttpResponse.body
+        chaiHttpResponse = await chai.request(app).patch(ENDPOINT).set('authorization',token).send(updateMatch);
+      })
+      after(async ()=>{
+        (Match.update as sinon.SinonStub).restore();
+        (Match.findByPk as sinon.SinonStub).restore();
+      })
+      
+      it("Deve retornar status 200",() =>{
+        expect(chaiHttpResponse).to.have.status(200);
+      })
+      
+    })
+
+    describe("Quando a partida da requisição não existe", async ()=>{
+        before(async ()=>{
+          sinon.stub(Match,'findByPk').resolves(null)
+          chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+          const{ token } = chaiHttpResponse.body
+          chaiHttpResponse = await chai.request(app).patch(ENDPOINT).set('authorization',token)
+            .send({...updateMatch,id:100});
+        })
+        after(async ()=>{
+          (Match.findByPk as sinon.SinonStub).restore();
+        })
+        
+        it("Deve retornar status 404",() =>{
+          expect(chaiHttpResponse).to.have.status(404);
+        })
+
+        it("Deve retornar a mensagem correta",() =>{
+            expect(chaiHttpResponse.body.message).to.be.equal('Match not found');
+          })
+        
+      })
+
+      describe("Quando a partida já foi finalizada", async ()=>{
+        before(async ()=>{
+          sinon.stub(Match,'findByPk').resolves(mockedFinishedMatch as Match)
+          chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
+          const{ token } = chaiHttpResponse.body
+          chaiHttpResponse = await chai.request(app).patch(ENDPOINT).set('authorization',token)
+            .send(updateMatch);
+        })
+        after(async ()=>{
+          (Match.findByPk as sinon.SinonStub).restore();
+        })
+        
+        it("Deve retornar status 401",() =>{
+          expect(chaiHttpResponse).to.have.status(401);
+        })
+
+        it("Deve retornar a mensagem correta",() =>{
+            expect(chaiHttpResponse.body.message).to.be.equal('Match already finished');
+          })
+        
+      })
+    
+    describe("Quando a requisição possui um token inválido", async ()=>{
+      before(async ()=>{
+        chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization','tokenInvalido');
+      })
+      
+      it("Deve retornar status 401",() =>{
+        expect(chaiHttpResponse).to.have.status(401);
+      })
+      
+      it("Deve retornar a mensagem correta",() =>{
+        expect(chaiHttpResponse.body.message).to.be.equal("Invalid Token");
+      })
+      
+    })   
+  });
 
 
   /**
