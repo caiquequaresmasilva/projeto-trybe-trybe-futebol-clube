@@ -25,6 +25,6 @@ const finishMatch = async (req:Request, res:Response) => {
   if (typeof finish !== 'number') {
     return res.status(finish.errorCode).json({ message: finish.message });
   }
-  res.status(200).end();
+  res.status(200).json('ok');
 };
 export { getAll, create, finishMatch };
