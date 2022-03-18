@@ -34,7 +34,7 @@ const create = async (data: Match) => {
   }
   const teamsFlag = await validateTeams(data);
   if (!teamsFlag) {
-    return { errorCode: 404, message: 'Team not found' };
+    return { errorCode: 401, message: 'There is no team with such id!' };
   }
   const { id } = await Match.create(data);
   return { ...data, id };
