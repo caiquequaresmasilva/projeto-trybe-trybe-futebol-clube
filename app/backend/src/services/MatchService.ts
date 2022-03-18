@@ -16,12 +16,26 @@ const getAll = async (inProgress: undefined | string) => {
 const update = async (id: string | number, data: object) => {
   const match = await Match.findByPk(id);
   if (!match) return { errorCode: 404, message: 'Match not found' };
-  if (!match.inProgress) return { errorCode: 400, message: 'Match already finished' };
+  if (!match.inProgress) return { errorCode: 401, message: 'Match already finished' };
   const [updated] = await Match.update(data, { where: { id } });
   return updated;
 };
 
+const validateMatch = ({ homeTeam, awayTeam }: Match) => homeTeam !== awayTeam;
+
+const validateTeams = async ({ homeTeam, awayTeam }: Match) => {
+  const teams = await Club.findAll({ where: { id: [homeTeam, awayTeam] } });
+  return teams.length === 2;
+};
+
 const create = async (data: Match) => {
+  if (!validateMatch(data)) {
+    return { errorCode: 401, message: 'It is not possible to create a match with two equal teams' };
+  }
+  const teamsFlag = await validateTeams(data);
+  if (!teamsFlag) {
+    return { errorCode: 404, message: 'Team not found' };
+  }
   const { id } = await Match.create(data);
   return { ...data, id };
 };

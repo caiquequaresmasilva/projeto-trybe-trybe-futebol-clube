@@ -13,6 +13,9 @@ const create = async (req:Request, res:Response) => {
   const createdMatch = await MatchService.create(
     { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } as Match,
   );
+  if (createdMatch.errorCode) {
+    return res.status(createdMatch.errorCode).json({ message: createdMatch.message });
+  }
   res.status(201).json(createdMatch);
 };
 

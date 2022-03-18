@@ -261,7 +261,7 @@ describe("POST /matchs",async()=>{
     })
     
     it("Deve retornar a mensagem correta",() =>{
-      expect(chaiHttpResponse.body.message).to.be("It is not possible to create a match with two equal teams");
+      expect(chaiHttpResponse.body.message).to.be.equal("It is not possible to create a match with two equal teams");
     })
     
   })
@@ -278,7 +278,7 @@ describe("POST /matchs",async()=>{
     })
     
     it("Deve retornar a mensagem correta",() =>{
-      expect(chaiHttpResponse.body.message).to.be("Team not found");
+      expect(chaiHttpResponse.body.message).to.be.equal("Team not found");
     })
     
   })  
