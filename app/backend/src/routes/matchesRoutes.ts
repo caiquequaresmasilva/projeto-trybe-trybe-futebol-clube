@@ -9,5 +9,6 @@ router.get('/', MatchController.getAll);
 router.use(authValidation);
 router.post('/', MatchController.create);
 router.patch('/:id/finish', MatchController.finishMatch);
+router.patch('/:id', MatchController.update);
 
 export default router;

@@ -27,4 +27,16 @@ const finishMatch = async (req:Request, res:Response) => {
   }
   res.status(200).json('ok');
 };
-export { getAll, create, finishMatch };
+
+const update = async (req:Request, res:Response) => {
+  const { id } = req.params;
+  const { homeTeamGoals, awayTeamGoals } = req.body;
+  const data = homeTeamGoals || awayTeamGoals
+    ? { homeTeamGoals, awayTeamGoals } : { inProgress: false };
+  const up = await MatchService.update(id, data);
+  if (typeof up !== 'number') {
+    return res.status(up.errorCode).json({ message: up.message });
+  }
+  res.status(200).json('ok');
+};
+export { getAll, create, finishMatch, update };
