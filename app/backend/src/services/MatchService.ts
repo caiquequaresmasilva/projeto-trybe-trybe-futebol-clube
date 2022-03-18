@@ -13,6 +13,15 @@ const getAll = async (inProgress: undefined | string) => {
   return matchs;
 };
 
-const getById = () => null;
+const update = async (id: string | number, data: object) => {
+  const [updated] = await Match.update(data, { where: { id } });
+  if (!updated) return { errorCode: 404, message: 'Team not found' };
+  return updated;
+};
 
-export { getAll, getById };
+const create = async (data: Match) => {
+  const { id } = await Match.create(data);
+  return { ...data, id };
+};
+
+export { getAll, update, create };

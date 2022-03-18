@@ -224,7 +224,7 @@ describe("GET /matchs?inProgress=",async()=>{
 
 describe("POST /matchs",async()=>{
   const ENDPOINT = '/matchs';
-  const mockedCreatedMatch = {id:1, ...matchToSave}
+  const mockedCreatedMatch = {...matchToSave, id:1}
   const wrongMatch = {...matchToSave,awayTeam: matchToSave.homeTeam}
   const wrongClubMatch = {...matchToSave, homeTeam:42}
     
@@ -293,7 +293,7 @@ describe("POST /matchs",async()=>{
     })
     
     it("Deve retornar a mensagem correta",() =>{
-      expect(chaiHttpResponse.body.message).to.be("Invalid Token");
+      expect(chaiHttpResponse.body.message).to.be.equal("Invalid Token");
     })
     
   })   
@@ -301,7 +301,7 @@ describe("POST /matchs",async()=>{
 
 describe("PATCH /matchs/:id/finish",async()=>{
   const ENDPOINT = '/matchs/1/finish';
-  const mockedUpdatedMatch = {id:1, inProgress: false, ...matchToSave}
+  const mockedUpdatedMatch = {...matchToSave, id:1, inProgress: false}
   const response: [number,Match[]] = [1,[mockedUpdatedMatch as Match]]
     
   describe("Quando a requisição possui um token válido", async ()=>{
