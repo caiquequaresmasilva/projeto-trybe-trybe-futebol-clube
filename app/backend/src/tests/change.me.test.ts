@@ -301,18 +301,20 @@ describe("POST /matchs",async()=>{
 
 describe("PATCH /matchs/:id/finish",async()=>{
   const ENDPOINT = '/matchs/1/finish';
-  const mockedUpdatedMatch = {...matchToSave, id:1, inProgress: false}
-  const response: [number,Match[]] = [1,[mockedUpdatedMatch as Match]]
+  const mockedInProgressMatch = {...matchToSave, id:1, inProgress: true}
+  const response: [number,Match[]] = [1,[mockedInProgressMatch as Match]]
     
   describe("Quando a requisição possui um token válido", async ()=>{
     before(async ()=>{
       sinon.stub(Match,'update').resolves(response);
+      sinon.stub(Match,'findByPk').resolves(mockedInProgressMatch as Match)
       chaiHttpResponse = await chai.request(app).post('/login').send(validUser);
       const{ token } = chaiHttpResponse.body
       chaiHttpResponse = await chai.request(app).patch(ENDPOINT).set('authorization',token);
     })
     after(async ()=>{
       (Match.update as sinon.SinonStub).restore();
+      (Match.findByPk as sinon.SinonStub).restore();
     })
     
     it("Deve retornar status 200",() =>{
@@ -321,7 +323,7 @@ describe("PATCH /matchs/:id/finish",async()=>{
     
   })
   
-  describe("Quando a requisição não possui um token válido", async ()=>{
+  describe("Quando a requisição possui um token inválido", async ()=>{
     before(async ()=>{
       chaiHttpResponse = await chai.request(app).post(ENDPOINT).set('authorization','tokenInvalido');
     })
@@ -331,7 +333,7 @@ describe("PATCH /matchs/:id/finish",async()=>{
     })
     
     it("Deve retornar a mensagem correta",() =>{
-      expect(chaiHttpResponse.body.message).to.be("Invalid Token");
+      expect(chaiHttpResponse.body.message).to.be.equal("Invalid Token");
     })
     
   })   

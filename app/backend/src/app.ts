@@ -31,8 +31,8 @@ class App {
 
   private setRoutes():void {
     this.app.use('/login', loginRouter);
-    this.app.use('/clubs', clubsRouter);
     this.app.use('/matchs', matchesRouter);
+    this.app.use('/clubs', clubsRouter);
   }
 
   // ...

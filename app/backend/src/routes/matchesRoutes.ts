@@ -5,7 +5,9 @@ import authValidation from '../middlewares/authValidation';
 const router = Router();
 
 router.get('/', MatchController.getAll);
+
 router.use(authValidation);
 router.post('/', MatchController.create);
+router.patch('/:id/finish', MatchController.finishMatch);
 
 export default router;

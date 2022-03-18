@@ -16,4 +16,12 @@ const create = async (req:Request, res:Response) => {
   res.status(201).json(createdMatch);
 };
 
-export { getAll, create };
+const finishMatch = async (req:Request, res:Response) => {
+  const { id } = req.params;
+  const finish = await MatchService.update(id, { inProgress: false });
+  if (typeof finish !== 'number') {
+    return res.status(finish.errorCode).json({ message: finish.message });
+  }
+  res.status(200).end();
+};
+export { getAll, create, finishMatch };

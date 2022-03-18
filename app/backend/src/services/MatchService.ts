@@ -14,8 +14,10 @@ const getAll = async (inProgress: undefined | string) => {
 };
 
 const update = async (id: string | number, data: object) => {
+  const match = await Match.findByPk(id);
+  if (!match) return { errorCode: 404, message: 'Match not found' };
+  if (!match.inProgress) return { errorCode: 400, message: 'Match already finished' };
   const [updated] = await Match.update(data, { where: { id } });
-  if (!updated) return { errorCode: 404, message: 'Team not found' };
   return updated;
 };
 
