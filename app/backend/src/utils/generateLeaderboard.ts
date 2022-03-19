@@ -1,4 +1,4 @@
-import { IClubHomeMatches, IStatistics, MatchScore } from '../interfaces/Club';
+import { IClubAwayMatches, IClubHomeMatches, IStatistics, MatchScore } from '../interfaces/Club';
 
 interface Points {
   [index:string]: number
@@ -31,9 +31,40 @@ const getHomeResults = (scores:MatchScore[]) => {
   const { 1: totalVictories, 0: totalDraws, '-1': totalLosses, ...res } = results;
   return { totalVictories, totalDraws, totalLosses, ...res };
 };
+
+const getAwayResults = (scores:MatchScore[]) => {
+  const points: Points = { 1: 3, 0: 1, '-1': 0 };
+  const results: Results = {
+    1: 0, 0: 0, '-1': 0, goalsFavor: 0, goalsOwn: 0, totalPoints: 0, goalsBalance: 0,
+  };
+  scores.forEach((score) => {
+    const { homeTeamGoals, awayTeamGoals } = score;
+    const res = Math.sign(awayTeamGoals - homeTeamGoals);
+    results[res] += 1;
+    results.totalPoints += points[res];
+    results.goalsFavor += awayTeamGoals;
+    results.goalsOwn += homeTeamGoals;
+    results.goalsBalance = results.goalsFavor - results.goalsOwn;
+  });
+  const { 1: totalVictories, 0: totalDraws, '-1': totalLosses, ...res } = results;
+  return { totalVictories, totalDraws, totalLosses, ...res };
+};
 const getHomeStatistics = (match:IClubHomeMatches): IStatistics => {
   const homeResults = getHomeResults(match.homeMatches);
   const totalGames = match.homeMatches.length;
+  const efficiency = Number(((homeResults.totalPoints / (totalGames * 3)) * 100).toFixed(2));
+
+  return {
+    name: match.clubName,
+    totalGames,
+    efficiency,
+    ...homeResults,
+  };
+};
+
+const getAwayStatistics = (match:IClubAwayMatches): IStatistics => {
+  const homeResults = getAwayResults(match.awayMatches);
+  const totalGames = match.awayMatches.length;
   const efficiency = Number(((homeResults.totalPoints / (totalGames * 3)) * 100).toFixed(2));
 
   return {
@@ -69,4 +100,10 @@ const generateHomeLeaderboard = (matchs: IClubHomeMatches[]) => {
   return statistics;
 };
 
-export default generateHomeLeaderboard;
+const generateAwayLeaderboard = (matchs: IClubAwayMatches[]) => {
+  const statistics = matchs.map(getAwayStatistics);
+  statistics.sort(sortFunction);
+  return statistics;
+};
+
+export { generateAwayLeaderboard, generateHomeLeaderboard };

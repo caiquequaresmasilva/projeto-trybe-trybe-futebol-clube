@@ -1,5 +1,5 @@
-import { IClubHomeMatches } from '../interfaces/Club';
-import { generateHomeLeaderboard } from '../utils';
+import { IClubAwayMatches, IClubHomeMatches } from '../interfaces/Club';
+import { generateHomeLeaderboard, generateAwayLeaderboard } from '../utils';
 import Club from '../database/models/clubs';
 import Match from '../database/models/matchs';
 
@@ -56,4 +56,18 @@ const getHomeLeaderboard = async () => {
   return leaderboard;
 };
 
-export { getAll, update, create, getHomeLeaderboard };
+const getAwayLeaderboard = async () => {
+  const matchs: IClubAwayMatches[] = await Club.findAll({
+    include: [
+      { model: Match,
+        as: 'awayMatches',
+        attributes: ['homeTeamGoals', 'awayTeamGoals'],
+        where: { inProgress: false },
+      },
+    ],
+  });
+  const leaderboard = generateAwayLeaderboard(matchs);
+  return leaderboard;
+};
+
+export { getAll, update, create, getHomeLeaderboard, getAwayLeaderboard };

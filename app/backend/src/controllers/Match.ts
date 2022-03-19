@@ -44,4 +44,9 @@ const getHomeLeaderboard = async (req:Request, res:Response) => {
   const leaderboard = await MatchService.getHomeLeaderboard();
   res.status(200).json(leaderboard);
 };
-export { getAll, create, finishMatch, update, getHomeLeaderboard };
+
+const getAwayLeaderboard = async (req:Request, res:Response) => {
+  const leaderboard = await MatchService.getAwayLeaderboard();
+  res.status(200).json(leaderboard);
+};
+export { getAll, create, finishMatch, update, getHomeLeaderboard, getAwayLeaderboard };
