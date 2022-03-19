@@ -1,3 +1,5 @@
+import { IClubHomeMatches } from '../interfaces/Club';
+import { generateHomeLeaderboard } from '../utils';
 import Club from '../database/models/clubs';
 import Match from '../database/models/matchs';
 
@@ -40,4 +42,18 @@ const create = async (data: Match) => {
   return { ...data, id };
 };
 
-export { getAll, update, create };
+const getHomeLeaderboard = async () => {
+  const matchs: IClubHomeMatches[] = await Club.findAll({
+    include: [
+      { model: Match,
+        as: 'homeMatches',
+        attributes: ['homeTeamGoals', 'awayTeamGoals'],
+        where: { inProgress: false },
+      },
+    ],
+  });
+  const leaderboard = generateHomeLeaderboard(matchs);
+  return leaderboard;
+};
+
+export { getAll, update, create, getHomeLeaderboard };

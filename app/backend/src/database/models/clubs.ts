@@ -1,11 +1,16 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '.';
+import { MatchScore } from '../../interfaces/Club';
 // import OtherModel from './OtherModel';
 
 class Club extends Model {
   public id: number;
 
   public clubName: string;
+
+  public homeMatches: MatchScore[];
+
+  public awayMatches: MatchScore[];
 }
 
 Club.init({

@@ -39,4 +39,9 @@ const update = async (req:Request, res:Response) => {
   }
   res.status(200).json('ok');
 };
-export { getAll, create, finishMatch, update };
+
+const getHomeLeaderboard = async (req:Request, res:Response) => {
+  const leaderboard = await MatchService.getHomeLeaderboard();
+  res.status(200).json(leaderboard);
+};
+export { getAll, create, finishMatch, update, getHomeLeaderboard };
