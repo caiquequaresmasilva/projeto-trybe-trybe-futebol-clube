@@ -1,6 +1,6 @@
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { readFileSync } from 'fs';
-import IUser from '../interfaces/User';
+import { IUser } from '../interfaces';
 
 const Token = {
   JWT_SECRET: readFileSync('./jwt.evaluation.key', 'utf-8'),

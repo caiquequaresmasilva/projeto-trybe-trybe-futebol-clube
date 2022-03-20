@@ -40,13 +40,10 @@ const update = async (req:Request, res:Response) => {
   res.status(200).json('ok');
 };
 
-const getHomeLeaderboard = async (req:Request, res:Response) => {
-  const leaderboard = await MatchService.getHomeLeaderboard();
+const getLeaderboard = async (req:Request, res:Response) => {
+  const path = req.url.replace('/', '');
+  const leaderboard = await MatchService.getLeaderboard(path);
   res.status(200).json(leaderboard);
 };
-
-const getAwayLeaderboard = async (req:Request, res:Response) => {
-  const leaderboard = await MatchService.getAwayLeaderboard();
-  res.status(200).json(leaderboard);
-};
-export { getAll, create, finishMatch, update, getHomeLeaderboard, getAwayLeaderboard };
+export {
+  getAll, create, finishMatch, update, getLeaderboard };

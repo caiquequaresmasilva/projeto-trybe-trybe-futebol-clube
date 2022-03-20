@@ -17,5 +17,4 @@ interface ILoginResponse{
   token: string
 }
 
-export default IUser;
-export { ILogin, ILoginResponse };
+export { IUser, ILogin, ILoginResponse };

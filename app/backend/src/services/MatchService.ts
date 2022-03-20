@@ -1,5 +1,5 @@
-import { IClubAwayMatches, IClubHomeMatches } from '../interfaces/Club';
-import { generateHomeLeaderboard, generateAwayLeaderboard } from '../utils';
+import { generateIncludeParam, generateLeaderboard } from '../utils';
+import { IClubMatches } from '../interfaces';
 import Club from '../database/models/clubs';
 import Match from '../database/models/matchs';
 
@@ -42,32 +42,11 @@ const create = async (data: Match) => {
   return { ...data, id };
 };
 
-const getHomeLeaderboard = async () => {
-  const matchs: IClubHomeMatches[] = await Club.findAll({
-    include: [
-      { model: Match,
-        as: 'homeMatches',
-        attributes: ['homeTeamGoals', 'awayTeamGoals'],
-        where: { inProgress: false },
-      },
-    ],
-  });
-  const leaderboard = generateHomeLeaderboard(matchs);
+const getLeaderboard = async (path: string) => {
+  const include = generateIncludeParam(path);
+  const matchs: IClubMatches[] = await Club.findAll({ include });
+  const leaderboard = generateLeaderboard(matchs, path);
   return leaderboard;
 };
 
-const getAwayLeaderboard = async () => {
-  const matchs: IClubAwayMatches[] = await Club.findAll({
-    include: [
-      { model: Match,
-        as: 'awayMatches',
-        attributes: ['homeTeamGoals', 'awayTeamGoals'],
-        where: { inProgress: false },
-      },
-    ],
-  });
-  const leaderboard = generateAwayLeaderboard(matchs);
-  return leaderboard;
-};
-
-export { getAll, update, create, getHomeLeaderboard, getAwayLeaderboard };
+export { getAll, update, create, getLeaderboard };

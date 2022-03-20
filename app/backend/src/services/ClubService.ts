@@ -1,4 +1,4 @@
-import IClub from '../interfaces/Club';
+import { IClub } from '../interfaces';
 import Club from '../database/models/clubs';
 
 const getAll = async (): Promise<IClub[]> => {

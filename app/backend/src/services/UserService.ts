@@ -1,4 +1,4 @@
-import { ILogin } from '../interfaces/User';
+import { ILogin } from '../interfaces';
 import User from '../database/models/users';
 import { loginSchema } from '../schemas/user';
 import { Token, checkPassword } from '../utils';
