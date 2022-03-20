@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
+import { RequestWithUser } from '../interfaces';
 import * as UserService from '../services/UserService';
 
 const login = async (req: Request, res: Response) => {
@@ -15,11 +17,9 @@ const validateLogin = async (req: Request, res: Response, next: NextFunction) =>
   next();
 };
 
-const getRole = async (req: Request, res: Response) => {
-  const { authorization } = req.headers;
-  const val = UserService.authValidation(authorization);
-  if (val.errorCode) return res.status(val.errorCode).json({ message: val.message });
-  res.status(200).json(val.role);
+const getRole = async (req: RequestWithUser, res: Response) => {
+  const { user: { role } } : JwtPayload = req;
+  res.status(200).json(role);
 };
 
 export { login, validateLogin, getRole };
