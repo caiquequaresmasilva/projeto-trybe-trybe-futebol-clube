@@ -1,14 +1,15 @@
 import { Router } from 'express';
-import * as MatchController from '../controllers/Match';
+import { matchControllerFactory } from '../factories';
 import authValidation from '../middlewares/authValidation';
 
 const router = Router();
+const matchController = matchControllerFactory();
 
-router.get('/', MatchController.getAll);
+router.get('/', (req, res) => matchController.getAll(req, res));
 
 router.use(authValidation);
-router.post('/', MatchController.create);
-router.patch('/:id/finish', MatchController.finishMatch);
-router.patch('/:id', MatchController.update);
+router.post('/', (req, res) => matchController.create(req, res));
+router.patch('/:id/finish', (req, res) => matchController.finishMatch(req, res));
+router.patch('/:id', (req, res) => matchController.update(req, res));
 
 export default router;
