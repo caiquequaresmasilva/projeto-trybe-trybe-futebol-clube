@@ -9,7 +9,7 @@ export default class UserService {
   private static loginSchema = loginSchema;
 
   constructor(
-    readonly userModel: typeof User,
+    private userModel: typeof User,
   ) {}
 
   static authValidation(token:string | undefined) {

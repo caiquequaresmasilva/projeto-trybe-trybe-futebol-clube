@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import { RequestWithUser } from '../interfaces';
-import UserService from '../services/UserService';
+import { UserService } from '../services';
 
 export default class UserController {
   constructor(private userService: UserService) {

@@ -1,16 +1,20 @@
 import { Request, Response } from 'express';
-import * as ClubService from '../services/ClubService';
+import { ClubService } from '../services';
 
-const getAll = async (req:Request, res:Response) => {
-  const clubs = await ClubService.getAll();
-  res.status(200).json(clubs);
-};
+export default class ClubController {
+  constructor(
+    private clubService: ClubService,
+  ) {}
 
-const getById = async (req:Request, res:Response) => {
-  const { id } = req.params;
-  const club = await ClubService.getById(id);
-  if (!club) return res.status(404).json({ message: 'Club not found' });
-  res.status(200).json(club);
-};
+  async getAll(req:Request, res:Response) {
+    const clubs = await this.clubService.getAll();
+    res.status(200).json(clubs);
+  }
 
-export { getAll, getById };
+  async getById(req:Request, res:Response) {
+    const { id } = req.params;
+    const club = await this.clubService.getById(id);
+    if (!club) return res.status(404).json({ message: 'Club not found' });
+    res.status(200).json(club);
+  }
+}

@@ -1,11 +1,15 @@
 import { IClub } from '../interfaces';
 import Club from '../database/models/clubs';
 
-const getAll = async (): Promise<IClub[]> => {
-  const clubs = await Club.findAll();
-  return clubs;
-};
+export default class ClubService {
+  constructor(
+    private clubModel: typeof Club,
+  ) {}
 
-const getById = async (id: number | string) => Club.findByPk(id);
+  async getAll(): Promise<IClub[]> {
+    const clubs = await this.clubModel.findAll();
+    return clubs;
+  }
 
-export { getAll, getById };
+  async getById(id: number | string) { return this.clubModel.findByPk(id); }
+}
