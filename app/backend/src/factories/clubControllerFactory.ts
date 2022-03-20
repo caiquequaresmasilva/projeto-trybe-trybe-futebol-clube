@@ -1,4 +1,4 @@
-import ClubController from '../controllers/Club';
+import { ClubController } from '../controllers';
 import clubServiceFactory from './clubServiceFactory';
 
 export default () => {

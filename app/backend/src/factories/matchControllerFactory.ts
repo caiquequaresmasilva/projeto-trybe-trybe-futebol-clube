@@ -1,4 +1,4 @@
-import MatchController from '../controllers/Match';
+import { MatchController } from '../controllers';
 import matchServiceFactory from './matchServiceFactory';
 
 export default () => {

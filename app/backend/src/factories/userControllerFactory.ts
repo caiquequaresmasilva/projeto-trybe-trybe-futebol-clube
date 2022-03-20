@@ -1,4 +1,4 @@
-import UserController from '../controllers/User';
+import { UserController } from '../controllers';
 import userServiceFactory from './userServiceFactory';
 
 export default () => {

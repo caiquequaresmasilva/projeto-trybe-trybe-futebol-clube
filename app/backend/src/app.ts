@@ -4,14 +4,11 @@ import { clubsRouter, leaderboardRouter, loginRouter, matchesRouter } from './ro
 
 class App {
   public app: express.Express;
-  // ...
 
   constructor() {
-    // ...
     this.app = express();
     this.config();
     this.setRoutes();
-    // ...
   }
 
   private config():void {
@@ -25,8 +22,6 @@ class App {
     this.app.use(accessControl);
     this.app.use(cors());
     this.app.use(express.json());
-
-    // ...
   }
 
   private setRoutes():void {
@@ -36,7 +31,6 @@ class App {
     this.app.use('/leaderboard', leaderboardRouter);
   }
 
-  // ...
   public start(PORT: string | number):void {
     this.app.listen(PORT, () => console.log(`Ouvindo na porta ${PORT}`));
   }
@@ -44,5 +38,4 @@ class App {
 
 export { App };
 
-// A execução dos testes de cobertura depende dessa exportação
 export const { app } = new App();

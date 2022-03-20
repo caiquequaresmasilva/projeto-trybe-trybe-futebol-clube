@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import UserController from '../controllers/User';
+import { UserController } from '../controllers';
 import { userControllerFactory } from '../factories';
 import authValidation from '../middlewares/authValidation';
 

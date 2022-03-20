@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import UserService from '../services/UserService';
+import { UserService } from '../services';
 import { RequestWithUser } from '../interfaces';
 
 export default async (req:RequestWithUser, res:Response, next:NextFunction) => {
