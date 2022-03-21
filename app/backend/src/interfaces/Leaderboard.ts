@@ -10,6 +10,8 @@ interface Results extends Points{
   goalsOwn: number
   totalPoints: number
   goalsBalance: number
+  totalGames: number
+  efficiency: number
 }
 
 type Factor = {
@@ -26,6 +28,8 @@ interface IScores{
   goalsFavor: number
   goalsOwn: number
   goalsBalance: number
+  totalGames:number
+  efficiency: number
 
 }
 

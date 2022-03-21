@@ -14,12 +14,4 @@ interface IClubMatches extends IClub{
   awayMatches?: MatchScore[]
 }
 
-interface IClubHomeMatches extends IClub{
-  homeMatches: MatchScore[]
-}
-
-interface IClubAwayMatches extends IClub{
-  awayMatches: MatchScore[]
-}
-
-export { IClub, IClubMatches, MatchScore, IClubAwayMatches, IClubHomeMatches };
+export { IClub, IClubMatches, MatchScore };

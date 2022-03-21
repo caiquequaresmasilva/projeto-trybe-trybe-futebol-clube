@@ -29,10 +29,22 @@ const sortFunction = (stat1:IStatistics, stat2:IStatistics) => {
   return 0;
 };
 
+const resultsDict = (): Results => ({
+  1: 0,
+  0: 0,
+  '-1': 0,
+  goalsFavor: 0,
+  goalsOwn: 0,
+  totalPoints: 0,
+  goalsBalance: 0,
+  totalGames: 0,
+  efficiency: 0,
+});
+
+const calculateEfficiency = (p:number, g:number) => Number(((p / (g * 3)) * 100).toFixed(2));
+
 const getScores = (scores:MatchScore[], path:string):IScores => {
-  const results: Results = {
-    1: 0, 0: 0, '-1': 0, goalsFavor: 0, goalsOwn: 0, totalPoints: 0, goalsBalance: 0,
-  };
+  const results = resultsDict();
   scores.forEach((score) => {
     const res = Math.sign((score.homeTeamGoals - score.awayTeamGoals) * factor[path]);
     results[res] += 1;
@@ -40,39 +52,37 @@ const getScores = (scores:MatchScore[], path:string):IScores => {
     results.goalsFavor += score[`${path}TeamGoals`];
     results.goalsOwn += score[`${path === 'home' ? 'away' : 'home'}TeamGoals`];
     results.goalsBalance = results.goalsFavor - results.goalsOwn;
+    results.totalGames += 1;
+    results.efficiency = calculateEfficiency(results.totalPoints, results.totalGames);
   });
   const { 1: totalVictories, 0: totalDraws, '-1': totalLosses, ...res } = results;
   return { totalVictories, totalDraws, totalLosses, ...res };
 };
 
-const sumStats = (stats1:IScores, stats2:IScores):IScores => ({
-  totalVictories: stats1.totalVictories + stats2.totalVictories,
-  totalDraws: stats1.totalDraws + stats2.totalDraws,
-  totalLosses: stats1.totalLosses + stats2.totalLosses,
-  totalPoints: stats1.totalPoints + stats2.totalPoints,
-  goalsFavor: stats1.goalsFavor + stats2.goalsFavor,
-  goalsOwn: stats1.goalsOwn + stats2.goalsOwn,
-  goalsBalance: stats1.goalsBalance + stats2.goalsBalance,
-});
+const mergeStats = ([homeStats, awayStats]: IScores[]): IScores[] => {
+  const { totalPoints: hp, totalGames: hg } = homeStats;
+  const { totalPoints: ap, totalGames: ag } = awayStats;
+  return [{
+    totalVictories: homeStats.totalVictories + awayStats.totalVictories,
+    totalDraws: homeStats.totalDraws + awayStats.totalDraws,
+    totalLosses: homeStats.totalLosses + awayStats.totalLosses,
+    totalPoints: homeStats.totalPoints + awayStats.totalPoints,
+    goalsFavor: homeStats.goalsFavor + awayStats.goalsFavor,
+    goalsOwn: homeStats.goalsOwn + awayStats.goalsOwn,
+    goalsBalance: homeStats.goalsBalance + awayStats.goalsBalance,
+    totalGames: homeStats.totalGames + awayStats.totalGames,
+    efficiency: calculateEfficiency(hp + ap, hg + ag),
+  }];
+};
 
 const getStatistics = (match:IClubMatches, path:string): IStatistics => {
-  let stats:IScores;
-  let totalGames:number;
+  let stats:IScores[] = [];
   const { homeMatches, awayMatches } = match;
-  if (!path) {
-    const stats1 = getScores(homeMatches as MatchScore[], 'home');
-    const stats2 = getScores(awayMatches as MatchScore[], 'away');
-    stats = sumStats(stats1, stats2);
-    totalGames = (<MatchScore[]>homeMatches).length + (<MatchScore[]>awayMatches).length;
-  } else if (path === 'home') {
-    stats = getScores(homeMatches as MatchScore[], path);
-    totalGames = (<MatchScore[]>homeMatches).length;
-  } else {
-    stats = getScores(awayMatches as MatchScore[], path);
-    totalGames = (<MatchScore[]>awayMatches).length;
-  }
-  const efficiency = Number(((stats.totalPoints / (totalGames * 3)) * 100).toFixed(2));
-  return { name: match.clubName, totalGames, efficiency, ...stats };
+  if (homeMatches) stats.push(getScores(homeMatches, 'home'));
+  if (awayMatches) stats.push(getScores(awayMatches, 'away'));
+  if (!path) stats = mergeStats(stats);
+
+  return { name: match.clubName, ...stats[0] };
 };
 
 const generateLeaderboard = (matchs: IClubMatches[], path:string) => {
