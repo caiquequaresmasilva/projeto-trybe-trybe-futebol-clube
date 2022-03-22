@@ -4,3 +4,4 @@ export { default as clubServiceFactory } from './clubServiceFactory';
 export { default as clubControllerFactory } from './clubControllerFactory';
 export { default as matchServiceFactory } from './matchServiceFactory';
 export { default as matchControllerFactory } from './matchControllerFactory';
+export { default as leaderboardControllerFactory } from './leaderboardControllerFactory';

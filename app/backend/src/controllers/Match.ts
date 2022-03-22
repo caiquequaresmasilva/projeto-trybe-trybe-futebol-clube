@@ -44,10 +44,4 @@ export default class MatchController {
     }
     res.status(200).json('ok');
   }
-
-  async getLeaderboard(req:Request, res:Response) {
-    const path = req.url.replace('/', '');
-    const leaderboard = await this.matchService.getLeaderboard(path);
-    res.status(200).json(leaderboard);
-  }
 }

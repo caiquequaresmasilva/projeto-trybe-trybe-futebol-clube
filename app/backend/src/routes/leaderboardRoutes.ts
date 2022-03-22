@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { matchControllerFactory } from '../factories';
+import { leaderboardControllerFactory } from '../factories';
 
 const router = Router();
-const matchController = matchControllerFactory();
+const lbController = leaderboardControllerFactory();
 
-router.get('/', (req, res) => matchController.getLeaderboard(req, res));
-router.get('/home', (req, res) => matchController.getLeaderboard(req, res));
-router.get('/away', (req, res) => matchController.getLeaderboard(req, res));
+router.get('/', (req, res) => lbController.getLeaderboard(req, res));
+router.get('/home', (req, res) => lbController.getLeaderboard(req, res));
+router.get('/away', (req, res) => lbController.getLeaderboard(req, res));
 
 export default router;

@@ -1,5 +1,3 @@
-import { generateIncludeParam, generateLeaderboard } from '../utils';
-import { IClubMatches } from '../interfaces';
 import Club from '../database/models/clubs';
 import Match from '../database/models/matchs';
 
@@ -50,12 +48,5 @@ export default class MatchService {
     }
     const { id } = await this.matchModel.create(data);
     return { ...data, id };
-  }
-
-  async getLeaderboard(path: string) {
-    const include = generateIncludeParam(path);
-    const matchs: IClubMatches[] = await this.clubModel.findAll({ include });
-    const leaderboard = generateLeaderboard(matchs, path);
-    return leaderboard;
   }
 }
