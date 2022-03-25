@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { ServiceError } from '../interfaces';
 import Match from '../database/models/matchs';
 import { MatchService } from '../services';
 
@@ -13,34 +14,34 @@ export default class MatchController {
     res.status(200).json(matches);
   }
 
-  async create(req:Request, res:Response) {
+  async create(req:Request, res:Response, next:NextFunction) {
     const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } = req.body;
     const createdMatch = await this.matchService.create(
       { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } as Match,
     );
-    if (createdMatch.errorCode) {
-      return res.status(createdMatch.errorCode).json({ message: createdMatch.message });
+    if ((<ServiceError>createdMatch).error) {
+      return next((<ServiceError>createdMatch).error);
     }
     res.status(201).json(createdMatch);
   }
 
-  async finishMatch(req:Request, res:Response) {
+  async finishMatch(req:Request, res:Response, next:NextFunction) {
     const { id } = req.params;
     const finish = await this.matchService.update(id, { inProgress: false });
-    if (typeof finish !== 'number') {
-      return res.status(finish.errorCode).json({ message: finish.message });
+    if ((<ServiceError>finish).error) {
+      return next((<ServiceError>finish).error);
     }
     res.status(200).json('ok');
   }
 
-  async update(req:Request, res:Response) {
+  async update(req:Request, res:Response, next:NextFunction) {
     const { id } = req.params;
     const { homeTeamGoals, awayTeamGoals } = req.body;
     const data = homeTeamGoals || awayTeamGoals
       ? { homeTeamGoals, awayTeamGoals } : { inProgress: false };
-    const up = await this.matchService.update(id, data);
-    if (typeof up !== 'number') {
-      return res.status(up.errorCode).json({ message: up.message });
+    const updated = await this.matchService.update(id, data);
+    if ((<ServiceError>updated).error) {
+      return next((<ServiceError>updated).error);
     }
     res.status(200).json('ok');
   }
