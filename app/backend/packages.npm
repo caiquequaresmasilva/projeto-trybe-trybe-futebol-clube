@@ -1,1 +1,1 @@
-bcryptjs @types/bcryptjs joi
+bcryptjs @types/bcryptjs joi express-rescue
