@@ -1,21 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
-import { RequestWithUser } from '../interfaces';
+import { RequestWithUser, ServiceError } from '../interfaces';
 import { UserService } from '../services';
 
 export default class UserController {
   constructor(private userService: UserService) {
   }
 
-  static async validateLogin(req: Request, res: Response, next: NextFunction) {
+  async validateLogin(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
-    const val = UserService.validateLogin({ email, password });
-    if (val.errorCode) return res.status(val.errorCode).json({ message: val.message });
+    const val = this.userService.validateLogin({ email, password });
+    if (val.error) return next(val.error);
     next();
-  }
-
-  teste() {
-    console.log(this.userService);
   }
 
   static async getRole(req: RequestWithUser, res: Response) {
@@ -23,11 +19,10 @@ export default class UserController {
     res.status(200).json(role);
   }
 
-  public async login(req: Request, res: Response) {
+  async login(req: Request, res: Response, next:NextFunction) {
     const { email, password } = req.body;
-    console.log(this.userService);
     const user = await this.userService.login({ email, password });
-    if (user.errorCode) return res.status(user.errorCode).json({ message: user.message });
+    if ((<ServiceError>user).error) return next((<ServiceError>user).error);
     res.status(200).json(user);
   }
 }
