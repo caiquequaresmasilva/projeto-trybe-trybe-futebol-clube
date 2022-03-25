@@ -7,7 +7,12 @@ const userController = userControllerFactory();
 
 const router = Router();
 
-router.post('/', UserController.validateLogin, (req, res) => userController.login(req, res));
+router.post(
+  '/',
+  (req, res, next) => userController.validateLogin(req, res, next),
+
+  (req, res, next) => userController.login(req, res, next),
+);
 
 router.use(authValidation);
 router.get('/validate', UserController.getRole);
