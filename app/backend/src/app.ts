@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as cors from 'cors';
 import { clubsRouter, leaderboardRouter, loginRouter, matchesRouter } from './routes';
+import errorHandler from './middlewares/errorHandler';
 
 class App {
   public app: express.Express;
@@ -29,6 +30,8 @@ class App {
     this.app.use('/matchs', matchesRouter);
     this.app.use('/clubs', clubsRouter);
     this.app.use('/leaderboard', leaderboardRouter);
+
+    this.app.use(errorHandler);
   }
 
   public start(PORT: string | number):void {
