@@ -5,16 +5,16 @@ import authValidation from '../middlewares/authValidation';
 
 const userController = userControllerFactory();
 
-const router = Router();
+const loginRoutes = Router();
 
-router.post(
+loginRoutes.post(
   '/',
   (req, res, next) => userController.validateLogin(req, res, next),
 
   (req, res, next) => userController.login(req, res, next),
 );
 
-router.use(authValidation);
-router.get('/validate', UserController.getRole);
+loginRoutes.use(authValidation);
+loginRoutes.get('/validate', UserController.getRole);
 
-export default router;
+export default loginRoutes;

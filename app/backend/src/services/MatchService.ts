@@ -10,7 +10,7 @@ export default class MatchService {
   ) {}
 
   async getAll(inProgress: undefined | string) {
-    const matchs = await this.matchModel.findAll({
+    return this.matchModel.findAll({
       where: inProgress ? { inProgress: inProgress === 'true' } : {},
       attributes: { exclude: ['home_team', 'away_team'] },
       include: [
@@ -18,7 +18,6 @@ export default class MatchService {
         { model: Club, as: 'awayClub', attributes: { exclude: ['id'] } },
       ],
     });
-    return matchs;
   }
 
   async update(id: string | number, data: Partial<Match>) {

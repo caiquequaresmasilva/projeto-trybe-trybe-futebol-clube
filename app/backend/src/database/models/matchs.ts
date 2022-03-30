@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '.';
-// import OtherModel from './OtherModel';
 import Club from './clubs';
 
 type ClubName = { clubName: string };
@@ -51,18 +50,8 @@ Match.init({
   tableName: 'matchs',
 });
 
-/**
-  * `Workaround` para aplicar as associations em TS:
-  * Associations 1:N devem ficar em uma das instâncias de modelo
-  * */
-
-// OtherModel.belongsTo(Example, { foreignKey: 'campoA', as: 'campoEstrangeiroA' });
-// OtherModel.belongsTo(Example, { foreignKey: 'campoB', as: 'campoEstrangeiroB' });
 Match.belongsTo(Club, { foreignKey: 'home_team', as: 'homeClub' });
 Match.belongsTo(Club, { foreignKey: 'away_team', as: 'awayClub' });
-
-// Example.hasMany(OtherModel, { foreignKey: 'campoC', as: 'campoEstrangeiroC' });
-// Example.hasMany(OtherModel, { foreignKey: 'campoD', as: 'campoEstrangeiroD' });
 
 Club.hasMany(Match, { foreignKey: 'home_team', as: 'homeMatches' });
 Club.hasMany(Match, { foreignKey: 'away_team', as: 'awayMatches' });

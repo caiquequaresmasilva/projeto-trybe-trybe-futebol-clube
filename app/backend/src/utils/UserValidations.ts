@@ -13,8 +13,7 @@ export default class UserValidations {
   authValidation(token:string | undefined) {
     if (!token) return this.errorGen.unauthorized('Token not found');
     try {
-      const user = this.tokenManager.verify(token);
-      return user;
+      return this.tokenManager.verify(token);
     } catch (_) {
       return this.errorGen.unauthorized('Invalid Token');
     }

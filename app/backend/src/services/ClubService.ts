@@ -9,8 +9,7 @@ export default class ClubService {
   ) {}
 
   async getAll(): Promise<IClub[]> {
-    const clubs = await this.clubModel.findAll();
-    return clubs;
+    return this.clubModel.findAll();
   }
 
   async getById(id: number | string) {
