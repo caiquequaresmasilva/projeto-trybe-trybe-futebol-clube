@@ -1,4 +1,4 @@
-export { default as ClubController } from './Club';
-export { default as MatchController } from './Match';
-export { default as UserController } from './User';
-export { default as LeaderboardController } from './Leaderboard';
+export { default as ClubController } from './ClubController';
+export { default as MatchController } from './MatchController';
+export { default as UserController } from './UserController';
+export { default as LeaderboardController } from './LeaderboardController';

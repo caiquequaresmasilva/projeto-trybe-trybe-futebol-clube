@@ -30,7 +30,6 @@ export default class LeaderboardService {
   async getLeaderboard(path: string):Promise<IStatistics[]> {
     const include = this.generateIncludeParam(path);
     const matchs: IClubMatches[] = await this.clubModel.findAll({ include });
-    const leaderboard = this.lbTools.generateLeaderboard(matchs, path);
-    return leaderboard;
+    return this.lbTools.generateLeaderboard(matchs, path);
   }
 }
