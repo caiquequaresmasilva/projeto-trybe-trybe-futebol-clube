@@ -86,6 +86,154 @@ A aplicação pode ser acessada pelo endereço http://localhost:3000/leaderboard
 
 ---
 
+## Endpoints
+* `POST /login` Se conter dados válidos, loga o usuário e retorna um Token de autenticação.
+
+   Request body:
+  ```json
+  {
+    "email": "admin@admin.com",
+    "password": "secret_admin"
+  }
+  ``` 
+  
+   Response body:
+  ```json
+  {
+    "user": {
+      "id": 1,
+      "username": "Admin",
+      "role": "admin",
+      "email": "admin@admin.com"
+    },
+    "token": "asdkal.hjfghf.werwqrq" //Exemplo de token gerado pelo backend
+  }
+  ``` 
+  HTTP STATUS: `200 OK`
+
+ 
+* `GET /login/validate` Deve possuir o token fornecido. Retorna `role` do usuário.
+
+   Response body:
+  ```json
+  "admin"
+  ``` 
+  HTTP STATUS: `200 OK`
+
+ 
+* `GET /clubs` Retorna todos os times registrados no banco de dados.
+  
+  Response body:
+  ```json
+  [
+    {
+      "id": 1,
+      "clubName": "Avaí/Kindermann"
+    },
+    {
+      "id": 2,
+      "clubName": "Bahia"
+    },
+    ...
+  ]
+  ``` 
+  HTTP STATUS: `200 OK`
+ 
+* `GET /clubs/:id` Retorna time especificado.
+
+  Request params: `/clubs/1`
+  
+  Response body:
+  ```json
+    {
+      "id": 1,
+      "clubName": "Avaí/Kindermann"
+    }
+  ``` 
+  HTTP STATUS: `200 OK`
+  
+* `GET /matchs` Retorna lista de todas as partidas.
+
+  Response body:
+  ```json
+  [
+    {
+      "id": 1,
+      "homeTeamGoals": 1,
+      "awayTeamGoals": 1,
+      "inProgress": false,
+      "homeTeam": 16,
+      "awayTeam": 8,
+      "homeClub": {
+        "clubName": "São Paulo"
+      },
+      "awayClub": {
+        "clubName": "Grêmio"
+      }
+    },
+    ...
+    {
+      "id": 48,
+      "homeTeamGoals": 1,
+      "awayTeamGoals": 1,
+      "inProgress": true,
+      "homeTeam": 13,
+      "awayTeam": 2,
+      "homeClub": {
+        "clubName": "Real Brasília"
+      },
+      "awayClub": {
+        "clubName": "Bahia"
+      }
+    }
+  ]
+  ``` 
+  HTTP STATUS: `200 OK`
+  
+* `GET /matchs?inProgress` Retorna lista de todas as partidas filtradas pelo parâmetro `inProgress`.
+
+  Request query: `/matchs?inProgress=true`
+  
+    Response body:
+  ```json
+  [
+     {
+      "id": 41,
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 0,
+      "inProgress": true,
+      "homeTeam": 16,
+      "awayTeam": 9,
+      "homeClub": {
+        "clubName": "São Paulo"
+      },
+      "awayClub": {
+        "clubName": "Internacional"
+      }
+    },
+    ...
+    {
+      "id": 48,
+      "homeTeamGoals": 1,
+      "awayTeamGoals": 1,
+      "inProgress": true,
+      "homeTeam": 13,
+      "awayTeam": 2,
+      "homeClub": {
+        "clubName": "Real Brasília"
+      },
+      "awayClub": {
+        "clubName": "Bahia"
+      }
+    }
+  ]
+  ``` 
+  HTTP STATUS: `200 OK`
+  
+  
+  
+  
+
 
 ## Executando Testes
 
