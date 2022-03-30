@@ -87,6 +87,8 @@ A aplicação pode ser acessada pelo endereço http://localhost:3000/leaderboard
 ---
 
 ## Endpoints
+---
+
 * `POST /login` Se conter dados válidos, loga o usuário e retorna um Token de autenticação.
 
    Request body:
@@ -119,6 +121,8 @@ A aplicação pode ser acessada pelo endereço http://localhost:3000/leaderboard
   "admin"
   ``` 
   HTTP STATUS: `200 OK`
+  
+---
 
  
 * `GET /clubs` Retorna todos os times registrados no banco de dados.
@@ -151,6 +155,7 @@ A aplicação pode ser acessada pelo endereço http://localhost:3000/leaderboard
     }
   ``` 
   HTTP STATUS: `200 OK`
+---
   
 * `GET /matchs` Retorna lista de todas as partidas.
 
@@ -230,11 +235,167 @@ A aplicação pode ser acessada pelo endereço http://localhost:3000/leaderboard
   ``` 
   HTTP STATUS: `200 OK`
   
-  
-  
-  
+* `POST /matchs` Deve possuir o token de autenticação. Cria uma partida com os dados válidos.
 
+   Request body:
+  ```json
+   {
+     "homeTeam": 16, 
+     "awayTeam": 8,
+     "homeTeamGoals": 2,
+     "awayTeamGoals": 2,
+     "inProgress": true 
+   }
+  ``` 
+  
+   Response body:
+  ```json
+   {
+     "id": 1,
+     "homeTeam": 16,
+     "homeTeamGoals": 2,
+     "awayTeam": 8,
+     "awayTeamGoals": 2,
+     "inProgress": true,
+   }
+  ``` 
+  HTTP STATUS: `201 CREATED`
+  
+* `PATCH /matchs/:id/finish` Deve possuir o token de autenticação. Finaliza a partida em progresso especificada.
 
+   Request params: `matchs/1/finish`
+   
+   HTTP STATUS: `200 OK`
+
+   
+* `PATCH /matchs/:id` Deve possuir o token de autenticação. Atualiza partida em andamento.
+
+   Request params: `matchs/1`
+   Request body:
+  ```json
+   {
+     "homeTeamGoals": 3,
+     "awayTeamGoals": 1
+   }
+  ``` 
+  
+  HTTP STATUS: `200 OK`
+
+---
+
+* `GET /leaderboard` Retorna a classificação geral dos times em ordem decrescente.
+
+ 
+   Response body:
+  ```json
+  [
+     {
+        "name": "Palmeiras",
+        "totalVictories": 4,
+        "totalDraws": 1,
+        "totalLosses": 0,
+        "totalPoints": 13,
+        "goalsFavor": 17,
+        "goalsOwn": 5,
+        "goalsBalance": 12,
+        "totalGames": 5,
+        "efficiency": 86.67
+     },
+      ...
+     {
+        "name": "Napoli-SC",
+        "totalVictories": 0,
+        "totalDraws": 2,
+        "totalLosses": 3,
+        "totalPoints": 2,
+        "goalsFavor": 3,
+        "goalsOwn": 12,
+        "goalsBalance": -9,
+        "totalGames": 5,
+        efficiency": 13.33
+	  }
+  ]
+
+  ``` 
+  
+  HTTP STATUS: `200 OK`
+  
+* `GET /leaderboard/home` Retorna a classificação dos times `mandantes`.
+
+ 
+   Response body:
+  ```json
+  [
+     {
+		"name": "Santos",
+		"totalVictories": 3,
+		"totalDraws": 0,
+		"totalLosses": 0,
+		"goalsFavor": 9,
+		"goalsOwn": 3,
+		"totalPoints": 9,
+		"goalsBalance": 6,
+		"totalGames": 3,
+		"efficiency": 100
+	 },
+      ...
+     {
+		"name": "Bahia",
+		"totalVictories": 0,
+		"totalDraws": 0,
+		"totalLosses": 3,
+		"goalsFavor": 0,
+		"goalsOwn": 4,
+		"totalPoints": 0,
+		"goalsBalance": -4,
+		"totalGames": 3,
+		"efficiency": 0
+	 }
+  ]
+
+  ``` 
+  
+  HTTP STATUS: `200 OK`
+  
+* `GET /leaderboard/away` Retorna a classificação dos times `visitantes`.
+
+ 
+   Response body:
+  ```json
+  [
+     {
+		"name": "Palmeiras",
+		"totalVictories": 2,
+		"totalDraws": 0,
+		"totalLosses": 0,
+		"goalsFavor": 7,
+		"goalsOwn": 0,
+		"totalPoints": 6,
+		"goalsBalance": 7,
+		"totalGames": 2,
+		"efficiency": 100
+	 },
+      ...
+     {
+		"name": "Napoli-SC",
+		"totalVictories": 0,
+		"totalDraws": 0,
+		"totalLosses": 3,
+		"goalsFavor": 1,
+		"goalsOwn": 10,
+		"totalPoints": 0,
+		"goalsBalance": -9,
+		"totalGames": 3,
+		"efficiency": 0
+	 }
+  ]
+
+  ``` 
+  
+  HTTP STATUS: `200 OK`
+  
+---
+  
 ## Executando Testes
 
 * Para rodar os testes de integração do backend, execute a API e rode o script:
